@@ -29,3 +29,106 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+    - name: Set SHA
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v2
+      with:
+        platforms: linux/arm64
+        context: .
+        file: ./Dockerfile
+        push: true 
+        tags: todelay/igeraweb:${{ steps.vars.outputs.sha_short }}
+
+    - name: Save SHA
+      env: 
+        TAG: ${{ steps.vars.outputs.sha_short }}
+      run: |
+         envsubst < deployment/base/deployment.yaml > tempbase
+         cat tempbase > deployment/base/deployment.yaml
+         rm tempbase
+    
+    - name: 'Upload Deploy'
+      uses: actions/upload-artifact@v2
+      with:
+        name: deploy
+        path: deploy
+        retention-days: 5
+    
+  dev:
+    name: Deploy To Dev
+    environment:
+      name: dev
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v1
+  
+    - name: Setup kubectl
+      env: 
+        K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+      
+    - name: Download Deploy
+      uses: actions/download-artifact@v2
+      with:
+        name: deploy
+      
+    - name: Apply pods
+      run: kubectl apply -k dev -n dev
+      
+    - name: Wait For Deployment To Start
+      run: sleep 10s
+      
+    - name: Wait For Pods To Start
+      run: kubectl wait --for=condition=ready pod -l app=igeraweb -n dev --timeout=10m
+      
+  prod:
+    name: Deploy To Prod
+    environment:
+      name: prod
+    runs-on: ubuntu-latest
+    needs: dev
+    
+    steps:
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v1
+  
+    - name: Setup kubectl
+      env: 
+        K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+      
+    - name: Download Deploy
+      uses: actions/download-artifact@v2
+      with:
+        name: deploy
+      
+    - name: Apply pods
+      run: kubectl apply -k prod -n prod
+      
+    - name: Wait For Deployment To Start
+      run: sleep 10s
+      
+    - name: Wait For Pods To Start
+      run: kubectl wait --for=condition=ready pod -l app=igeraweb -n prod --timeout=10m
+
+    
