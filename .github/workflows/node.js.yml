@@ -84,6 +84,7 @@ jobs:
       env: 
         K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
       run: |
+        echo "${K8S_CONFIG}"
         mkdir -p $HOME/.kube
         echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
       
