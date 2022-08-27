@@ -1,5 +1,8 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+env:
+  APP_NAME: igeraweb
+  SOURCE_FOLDER: ./
 
 name: Node.js CI
 
@@ -30,6 +33,12 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
 
+    - name: copy Dockerfile, nginx conf
+      working-directory: ${{ env.SOURCE_FOLDER }}
+      run: |-
+        cp ./Dockerfile ./dist/Dockerfile
+        cp ./nginx.conf ./dist/nginx.conf
+
     - name: Set SHA
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -50,7 +59,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true 
-        tags: todelay/igeraweb:${{ steps.vars.outputs.sha_short }}
+        tags: todelay/{{ env.APP_NAME }}:${{ steps.vars.outputs.sha_short }}
 
     - name: Save SHA
       env: 
@@ -97,7 +106,7 @@ jobs:
       run: sleep 10s
       
     - name: Wait For Pods To Start
-      run: kubectl wait --for=condition=ready pod -l app=igeraweb -n dev --timeout=10m
+      run: kubectl wait --for=condition=ready pod -l app={{ env.APP_NAME }} -n dev --timeout=10m
       
   prod:
     name: Deploy To Prod
@@ -129,6 +138,6 @@ jobs:
       run: sleep 10s
       
     - name: Wait For Pods To Start
-      run: kubectl wait --for=condition=ready pod -l app=igeraweb -n prod --timeout=10m
+      run: kubectl wait --for=condition=ready pod -l app={{ env.APP_NAME }} -n prod --timeout=10m
 
     
