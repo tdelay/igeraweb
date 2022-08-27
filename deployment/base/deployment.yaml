@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: igeraweb
+  labels:
+    app: igeraweb
+spec:
+  selector:
+    matchLabels:
+      app: igeraweb
+  template:
+    spec:
+      containers:
+      - name: igeraweb
+        image: horvatic/gokub-tester:${TAG}
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              configMapKeyRef: 
+                name: igeraweb-config
+                key: namespace 
+          - name: SERVICE
+            valueFrom:
+              configMapKeyRef: 
+                name: igeraweb-config
+                key: service 
+        ports:
+          - containerPort: 8080
+            name: "igeraweb-http"

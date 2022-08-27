@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: igeraweb-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /dev/igeraweb
+        pathType: Prefix
+        backend:
+          service:
+            name: igeraweb
+            port:
+              number: 8080
