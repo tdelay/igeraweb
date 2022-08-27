@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: igeraweb-config
 data:
-  namespace: "prod"
+  namespace: "dev"

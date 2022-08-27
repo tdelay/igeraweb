@@ -5,7 +5,8 @@ metadata:
   labels:
     app: igeraweb
 spec:
-  revisionHistoryLimit : 1
+  replicas: 2
+  revisionHistoryLimit : 5
   template:
     metadata:
       name: igeraweb
@@ -14,4 +15,3 @@ spec:
     spec:
       containers:
       - name: igeraweb
-       
