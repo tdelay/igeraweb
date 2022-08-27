@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: igeraweb
-        image: horvatic/gokub-tester:${TAG}
+        image: todelay/igeraweb:${TAG}
         env:
           - name: NAMESPACE
             valueFrom:
