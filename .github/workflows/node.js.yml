@@ -65,8 +65,8 @@ jobs:
     - name: 'Upload Deploy'
       uses: actions/upload-artifact@v2
       with:
-        name: deploy
-        path: deploy
+        name: deployment
+        path: deployment
         retention-days: 5
     
   dev:
@@ -90,7 +90,7 @@ jobs:
     - name: Download Deploy
       uses: actions/download-artifact@v2
       with:
-        name: deploy
+        name: deployment
       
     - name: Apply pods
       run: kubectl apply -k dev -n dev
@@ -122,7 +122,7 @@ jobs:
     - name: Download Deploy
       uses: actions/download-artifact@v2
       with:
-        name: deploy
+        name: deployment
       
     - name: Apply pods
       run: kubectl apply -k prod -n prod
