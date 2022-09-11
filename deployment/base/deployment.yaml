@@ -26,4 +26,3 @@ spec:
                 key: service 
         ports:
           - containerPort: 8080
-            name: "igeraweb-http"
