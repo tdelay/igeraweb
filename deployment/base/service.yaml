@@ -3,11 +3,12 @@ kind: Service
 metadata:
   name: igeraweb
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - name: http
       port: 8080
       protocol: TCP
       targetPort: igeraweb-http
+      nodePort: 30001
   selector:
     app: igeraweb

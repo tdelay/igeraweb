@@ -32,4 +32,4 @@ FROM nginx:latest
 COPY --from=build /usr/local/app/dist/igera-web-ng /usr/share/nginx/html
 
 # Expose port 80
-# EXPOSE 80
+EXPOSE 8080
