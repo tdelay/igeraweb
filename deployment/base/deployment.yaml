@@ -25,4 +25,4 @@ spec:
                 name: igeraweb-config
                 key: service 
         ports:
-          - containerPort: 8080
+          - containerPort: 80
