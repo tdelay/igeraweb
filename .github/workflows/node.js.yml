@@ -53,8 +53,6 @@ jobs:
         file: ./Dockerfile
         push: true 
         tags: todelay/${{ env.APP_NAME }}:${{ steps.vars.outputs.sha_short }}
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
     - name: Save SHA
       env: 

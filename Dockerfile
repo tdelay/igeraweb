@@ -1,5 +1,5 @@
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
-FROM nginx:1.15
+FROM nginx:latest
 #Copy ci-dashboard-dist
 COPY --from=build-stage /app/dist/out/ /usr/share/nginx/html
 #Copy default nginx configuration
@@ -32,4 +32,4 @@ FROM nginx:latest
 COPY --from=build /usr/local/app/dist/igera-web-ng /usr/share/nginx/html
 
 # Expose port 80
-EXPOSE 8080
+EXPOSE 80
