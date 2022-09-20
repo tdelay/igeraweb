@@ -31,7 +31,14 @@ FROM nginx:latest
 # Copy the build output to replace the default nginx contents.
 COPY --from=build /usr/local/app/dist/igera-web-ng /usr/share/nginx/html
 
-# Expose port 80
+# The following run statement is required to run nginx in Openshift and was borrowed from this article:
+# https://torstenwalter.de/openshift/nginx/2017/08/04/nginx-on-openshift.html
+RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html && \
+    chgrp -R root /var/cache/nginx
+
+RUN echo "nginx -g 'daemon off;'" > run.sh
+
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["sh", "run.sh"]
+
