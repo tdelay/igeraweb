@@ -54,8 +54,8 @@ jobs:
         builder: ${{ steps.buildx.outputs.name }}
         push: true 
         tags: todelay/${{ env.APP_NAME }}:${{ steps.vars.outputs.sha_short }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
+        # cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
+        # cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
 
     - name: Save SHA
       env: 
