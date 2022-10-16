@@ -51,7 +51,7 @@ jobs:
         platforms: linux/arm64
         context: .
         file: ./Dockerfile
-        push: true 
+        push: false 
         tags: todelay/${{ env.APP_NAME }}:${{ steps.vars.outputs.sha_short }}
 
     - name: Save SHA
@@ -101,36 +101,36 @@ jobs:
     - name: Wait For Pods To Start
       run: kubectl wait --for=condition=ready pod -l app=${{ env.APP_NAME }} -n dev --timeout=10m
       
-  prod:
-    name: Deploy To Prod
-    environment:
-      name: prod
-    runs-on: ubuntu-latest
-    needs: dev
+  # prod:
+  #   name: Deploy To Prod
+  #   environment:
+  #     name: prod
+  #   runs-on: ubuntu-latest
+  #   needs: dev
     
-    steps:
-    - name: Kubectl tool installer
-      uses: Azure/setup-kubectl@v1
+  #   steps:
+  #   - name: Kubectl tool installer
+  #     uses: Azure/setup-kubectl@v1
   
-    - name: Setup kubectl
-      env: 
-        K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
-      run: |
-        mkdir -p $HOME/.kube
-        echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+  #   - name: Setup kubectl
+  #     env: 
+  #       K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+  #     run: |
+  #       mkdir -p $HOME/.kube
+  #       echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
       
-    - name: Download Deploy
-      uses: actions/download-artifact@v2
-      with:
-        name: deployment
+  #   - name: Download Deploy
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: deployment
       
-    - name: Apply pods
-      run: kubectl apply -k prod -n prod
+  #   - name: Apply pods
+  #     run: kubectl apply -k prod -n prod
       
-    - name: Wait For Deployment To Start
-      run: sleep 10s
+  #   - name: Wait For Deployment To Start
+  #     run: sleep 10s
       
-    - name: Wait For Pods To Start
-      run: kubectl wait --for=condition=ready pod -l app=${{ env.APP_NAME }} -n prod --timeout=10m
+  #   - name: Wait For Pods To Start
+  #     run: kubectl wait --for=condition=ready pod -l app=${{ env.APP_NAME }} -n prod --timeout=10m
 
     
