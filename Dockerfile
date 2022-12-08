@@ -17,10 +17,10 @@ WORKDIR /usr/local/app
 COPY ./ /usr/local/app/
 
 # Install all the dependencies
-RUN npm install
+RUN npm ci
 
 # Generate the build of the application
-RUN npm run build
+RUN npm run build && rm -rf node_modules
 
 
 # Stage 2: Serve app with nginx server
