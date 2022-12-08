@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build && rm -rf node_modules
   
     - name: Set SHA
       id: vars
