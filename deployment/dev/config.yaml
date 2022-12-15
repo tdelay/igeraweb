@@ -2,5 +2,3 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: igeraweb-config
-data:
-  namespace: "dev"
