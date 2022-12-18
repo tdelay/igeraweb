@@ -96,7 +96,7 @@ jobs:
         name: deployment
       
     - name: Apply pods
-      run: kubectl apply -k dev -n dev
+      run: kubectl apply -k dev
       
     - name: Wait For Deployment To Start
       run: sleep 10s
