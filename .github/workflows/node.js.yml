@@ -97,10 +97,19 @@ jobs:
         name: deployment
       
     - name: Apply pods
-      run: kubectl apply -k dev
-      
+      run: |
+        kubectl create namespace igera-dev --dry-run=client -o yaml | kubectl apply -f -
+        kubectl apply -k dev --namespace=igera-dev
+        
     - name: Wait For Deployment To Start
       run: sleep 10s
+      
+    - name: Verify Deployment
+      run: |
+        echo "Checking deployment status..."
+        kubectl get pods -n igera-dev -l app=${{ env.APP_NAME }}
+        kubectl wait --for=condition=ready pod -l app=${{ env.APP_NAME }} --namespace=igera-dev --timeout=5m
+        echo "✅ Deployment successful! Pods are running."
       
   # prod:
   #   name: Deploy To Prod

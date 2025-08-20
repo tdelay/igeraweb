@@ -1,6 +1,12 @@
-bases:
+resources:
 - ../base
 
-patchesStrategicMerge:
-- config.yaml 
-- deployment.yaml
+patches:
+- target:
+    kind: ConfigMap
+    name: igeraweb-config
+  path: config.yaml
+- target:
+    kind: Deployment
+    name: igeraweb
+  path: deployment.yaml
