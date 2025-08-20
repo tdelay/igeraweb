@@ -102,9 +102,6 @@ jobs:
     - name: Wait For Deployment To Start
       run: sleep 10s
       
-    - name: Wait For Pods To Start
-      run: kubectl wait --for=condition=ready pod -l app=${{ env.APP_NAME }} -n dev --timeout=10m
-      
   # prod:
   #   name: Deploy To Prod
   #   environment:
