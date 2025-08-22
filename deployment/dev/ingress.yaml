@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: igeraweb-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+spec:
+  ingressClassName: public
+  tls:
+    - hosts:
+        - igera.lt
+      secretName: igeraweb-tls
+  rules:
+    - host: igera.lt
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: igeraweb
+                port:
+                  number: 8080
