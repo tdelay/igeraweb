@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sha_short: ${{ steps.vars.outputs.sha_short }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,14 +60,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
-            set -e
-            IMAGE_TAG="${{ env.IMAGE_REPO }}:${{ needs.build-and-push.outputs.sha_short }}"
-            docker pull "${IMAGE_TAG}"
-            docker stop ${{ env.CONTAINER_NAME }} || true
-            docker rm ${{ env.CONTAINER_NAME }} || true
-            docker run -d \
-              --name ${{ env.CONTAINER_NAME }} \
-              --restart unless-stopped \
-              -p 8080:80 \
-              "${IMAGE_TAG}"
+            cd /opt/apps
+            docker compose pull igeraweb
+            docker compose up -d igeraweb
             docker image prune -f
